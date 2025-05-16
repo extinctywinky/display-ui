@@ -1,0 +1,25 @@
+# Add an item to a UI
+function add_item(i: item, id: string):
+    set {_loc} to get_next_loc({_id})
+    spawn an interaction at {_loc}:
+        set {_hitbox} to entity
+
+    spawn an item display at {_loc}:
+        set {_d} to entity
+        set display item of {_d} to {_i}
+        set display translation of {_d} to vector(0,0.5,0)
+        make {_d} ride {_hitbox}
+
+    # Test configuration functions
+    hover_size({_d}, 1.5)
+    hover_glow({_d}, true)
+
+    # Store the information in a struct within the UI
+    set {_struct} to a ui_item struct
+
+    set {_struct}'s parent field to {_id}
+    set {_struct}'s hitbox field to {_hitbox}
+    set {_struct}'s item_display field to {_d}
+    set {_struct}'s item field to {_i}
+
+    add {_struct} to {ui::%{_id}%::items::*} 

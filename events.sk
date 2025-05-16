@@ -10,36 +10,45 @@ custom event "ui hover":
     check:
         continue
 
+# raytrace logic and calling events
+# metadata stuff for now so it can track how many times it calls the event
 
 every tick:
     loop all players:  
         set {_p} to loop-player
         set {_target} to raytrace({_p}) 
 
-        if {_target} is set:
+        if {_target} is set: 
             set metadata value "released" of {_p} to false
             set {_event-values::entity} to {_target}
 
             if metadata value "hovering" of {_p} != true: # so it only calls once 
+                set metadata value "current" of {_p} to {_target}
                 hover_logic({_target})
                 call a new custom event "ui hover" with event-values {_event-values::*} 
             set metadata value "hovering" of {_p} to true
 
-        else if {_target} is not set: # player isn't hovering over the previous thing = released
+        else if {_target} is not set: # player isn't hovering over an entity = released
             set metadata value "hovering" of {_p} to false
+            
             if metadata value "released" of {_p} != true: # so it only calls once
+                set {_target} to metadata value "current" of {_p} 
+                release_logic({_target}) 
 
-                release_logic({_target}) # {_target} won't work yet
                 call a new custom event "ui release" with event-values {_event-values::*} 
             set metadata value "released" of {_p} to true
 
 
+
+# Get the hitbox's passenger (the display item)
 function get_display(hitbox: entity) :: entity:
+    set {_passengers::*} to {_hitbox}'s passengers
+    return {_passengers::1}
 
 
-
-
+# called when an item is hovered over
 function hover_logic(d: entity):
+    set {_d} to get_display({_d})
     set {_nbt} to custom nbt compound of {_d}
     if boolean tag "ui;hover;glow" of {_nbt} = true:
         set glowing of {_d} to true
@@ -48,7 +57,9 @@ function hover_logic(d: entity):
         set display scale of {_d} to vector({_size},{_size},{_size})
 
 
+# called when an item is stopped being hovered over
 function release_logic(d: entity):
+    set {_d} to get_display({_d})
     set glowing of {_d} to false
     set display scale of {_d} to vector(1,1,1) # for now
 

@@ -1,6 +1,6 @@
 function raytrace(p: player) :: entity:
 
-    set {_ray} to ray trace from {_p} with max distance 15 while ignoring passable blocks
+    set {_ray} to ray trace from {_p} with max distance 15 with ray size 0.1 while ignoring passable blocks
     set {_target} to raytrace hit entity of {_ray}
     
     if {_target} is an interaction: # More checks later

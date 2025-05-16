@@ -1,0 +1,50 @@
+# Use structs to store data about the ui items
+# Store the structs in a list for the UI
+on load:
+    set {-slots_per_row} to 9
+    set {-item_spacing} to 1.3
+
+struct ui:
+    id: string
+    location: location
+
+
+struct ui_item:  
+    parent: string # UI
+    hitbox: entity
+    item_display: entity
+    item: item
+
+
+# Initialize a UI
+function ui(id: string, loc: location):
+    set {_loc} to middle of {_loc}
+
+    set {_ui} to a ui struct
+    set {_ui}'s id field to {_id}
+    set {_ui}'s location field to {_loc}
+
+    set {ui::%{_id}%} to {_ui}
+
+
+# Get the next slot location
+function get_next_loc(id: string) :: location:
+    set {_ui} to {ui::%{_id}%}
+    set {_loc} to {_ui}'s location field
+
+    set {_current_slot} to size of {ui::%{_id}%::items::*}
+
+    set {_x} to 0
+    set {_y} to 0
+
+    loop {_current_slot} times:
+        set {_i} to loop-iteration
+        add {-item_spacing} to {_x}
+        if mod({_i}, {-slots_per_row}) = 0:
+            subtract {-item_spacing} from {_y}
+            set {_x} to 0 
+   
+    return {_loc} ~ vector({_x}, {_y}, 0)
+
+
+
