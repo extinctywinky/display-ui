@@ -36,7 +36,7 @@ function add_item(i: item, id: string):
         set {_d} to entity
         set display item of {_d} to {_i}
         set display translation of {_d} to vector(0,0.5,0)
-        make {_d} ride {_hitbox}
+        make {_d} ride {_hitbox}a
 
     # Test configuration functions
     hover_size({_hitbox}, 1.5)
